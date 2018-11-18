@@ -10,7 +10,7 @@ classdef Part < handle
 		j       						% [kg m²] Trägheitstensor, 3x3, im lokalen, Hauptachsensystem des Parts
 		initialU	= [ 0 0 0 ]			% [kg m] initial unbalance vector. initialU is added to the calculated one
 		primitive						% struct with Informations of the primitive used to calculate inertia
-		typeID							% ID to describe the Part type, e.g. ProLemoMagnet, ProLemoDisc, ProLemoShaft (old: prolemo_mag, prolemo_disc, prolemo_shaft)
+		typeID							% ID to describe the Part type, e.g. ProjectX_magnet, ProjectX_disc, ProjectX_shaft
 		entityName						% Name of the Part in the Databas - if loaded from there or if inserted in DB
 		tag                             % The unique identifyer of a part
 		counter                         % Added by DO to count Part Number

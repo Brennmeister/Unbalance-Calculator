@@ -130,9 +130,13 @@ classdef PartPlot < handle
             if obj.isNewPart(p)
                 obj.part{end+1} = p;
                 if strcmp(p.primitive.primitiveType, 'cuboid')
-                    %plotting the cuboid
-                    obj.h{end+1} = obj.drawCube(p.getGlobalPosition, [p.primitive.length, p.primitive.width, p.primitive.height], p.getGlobalRotm, p.description);
-                    if p.mass < 0
+                    if p.mass > 0
+                        %plotting the cuboid
+                        obj.h{end+1} = obj.drawCube(p.getGlobalPosition, [p.primitive.length, p.primitive.width, p.primitive.height], p.getGlobalRotm, p.description);
+                    else
+                        % Plotte in anderer Farbe und länge leicht größer
+                        % --> keine Anzeige-Artefakte
+                        obj.h{end+1} = obj.drawCube(p.getGlobalPosition, [p.primitive.length*1.0001, p.primitive.width*1.0001, p.primitive.height*1.0001], p.getGlobalRotm, p.description);
                         % Plotte in anderer Farbe
                         for nH = 1:length(obj.h{end})
                             if strcmp(get(obj.h{end}{nH},'Type'), 'surface')
@@ -143,17 +147,22 @@ classdef PartPlot < handle
                     end
                 elseif strcmp(p.primitive.primitiveType, 'cylinder')
                     %plotting the cylinder
-                    obj.h{end+1}= obj.drawCylinder(p.getGlobalPosition, [p.primitive.diameter/2, p.primitive.length],  p.getGlobalRotm, p.description);
-                    if p.mass < 0
-                        % Plotte in anderer Farbe
+                    if p.mass > 0
+                        obj.h{end+1}= obj.drawCylinder(p.getGlobalPosition, [p.primitive.diameter/2, p.primitive.length],  p.getGlobalRotm, p.description);
+                    else
+                        % Plotte in anderer Farbe und länge leicht größer
+                        % --> keine Anzeige-Artefakte
+                        obj.h{end+1}= obj.drawCylinder(p.getGlobalPosition, [p.primitive.diameter/2, p.primitive.length*1.0001],  p.getGlobalRotm, p.description);
+                        
                         for nH = 1:length(obj.h{end})
-                            if strcmp(get(obj.h{end}{nH},'Type'), 'surface')
-%                             if isa(obj.h{end}{nH},'Surface')
+                            if strcmp(get(obj.h{end}{nH},'Type'), 'surface') || strcmp(get(obj.h{end}{nH},'Type'), 'patch')
+                                %                             if isa(obj.h{end}{nH},'Surface')
                                 set(obj.h{end}{nH}, 'FaceColor', obj.faceColorCylinderHole);
                                 set(obj.h{end}{nH}, 'FaceAlpha', 0.8);
                             end
                         end
                     end
+
                     %checking if drawing the planes and the axis is needed
                     if obj.showBalancePlane
                         obj.bP{end+1}=obj.drawBalancePlane(obj.balancePlanePos,obj.balancePlaneSize);
@@ -163,37 +172,13 @@ classdef PartPlot < handle
                     end
                     %% Test zum Plotten der Scheibenunwucht+Exzentrischen Sitze auf Welle
                     if obj.drawDiscUnbalance
-                        if strcmp(p.typeID,'ProLemoDisc') || strcmp(p.typeID,'ProLemoShaft')
-                            uIni = p.initialU * p.getGlobalRotm';
-                            pExz = p.parent.parent.getGlobalPosition;
-                            pExz(1) = 0;
-                            uExz = pExz*p.mass;
-                            o = p.getGlobalPosition();
-                            sF = obj.unbalanceScaleFactor;
-                            
-                            % Exzentrizität
-                            if norm(uExz)>0
-                                h.uExz = coolArrow(o,        o+uExz*sF, 'color', [74,111,227]./255);
-                            end
-                            % Initialunwucht
-                            if norm(uIni)>0
-                                h.uIni = coolArrow(o+uExz*sF, o+uExz*sF + uIni*sF, 'color', [181,187,227]./255);
-                            end
-                            % Resultierende
-                            if norm(uExz)>0 && norm(uIni)>0
-%                                 h.uRes = coolArrow(o, o+(uExz+uIni)*sF, 'color', [211,63,106]./255);
-                                uS = p.getUGlobal(-1,1);
-                                uS = uS(1:3)+uS(4:6);
-                                h.uRes = coolArrow(o, o+(uS)*sF, 'color', [211,63,106]./255);
-                            end
-                        else
-                            uIni = p.initialU * p.getGlobalRotm';
-                            o = p.getGlobalPosition();
-                            sF = obj.unbalanceScaleFactor;
-                            % Initialunwucht
-                            if norm(uIni)>0
-                                h.uIni = coolArrow(o, o + uIni*sF, 'color', [255,87,27]./255);
-                            end
+                        
+                        uIni = p.initialU * p.getGlobalRotm';
+                        o = p.getGlobalPosition();
+                        sF = obj.unbalanceScaleFactor;
+                        % Initialunwucht
+                        if norm(uIni)>0
+                            h.uIni = coolArrow(o, o + uIni*sF, 'color', [255,87,27]./255);
                         end
                         if exist('h','var')
                             obj.h{end}{end+1}=h;
@@ -457,8 +442,8 @@ classdef PartPlot < handle
             
             u = parent(1).getUAll(obj.balancePlanePos(1), obj.balancePlanePos(2)) * obj.unbalanceScaleFactor;
             
-            coolArrow( [obj.balancePlanePos(1), 0, 0], [obj.balancePlanePos(1), u(2:3)], 'color', [0, 1, 0]);
-            coolArrow( [obj.balancePlanePos(2), 0, 0], [obj.balancePlanePos(2), u(5:6)], 'color', [0, 1, 0]);
+            coolArrow( [obj.balancePlanePos(1), 0, 0], [obj.balancePlanePos(1), u(2:3)], 'color', [255, 145, 0]/255);
+            coolArrow( [obj.balancePlanePos(2), 0, 0], [obj.balancePlanePos(2), u(5:6)], 'color', [255, 145, 0]/255);
         end
         
     end

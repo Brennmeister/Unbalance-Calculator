@@ -59,7 +59,7 @@ rd.setPrimitive('cylinder', 'length', 10e-3, 'diameter', 90e-3)
 a_rd = Assembly('Rotor Disc Assembly');
 rd.setParent(a_rd)
 % Create left side part of the shaft
-shaft_l = Part('Rotor Shaft, left side of Disct');
+shaft_l = Part('Rotor Shaft, left side of Disc');
 shaft_l.mass = 50e-3;
 shaft_l.setPrimitive('cylinder', 'length', 50e-3, 'diameter', 10e-3)
 % Add an assembly for the shaft
@@ -67,7 +67,7 @@ a_shaft_l = Assembly('Left-Side Shaft Assembly');
 shaft_l.setParent(a_shaft_l)
 
 % Create right side part of the shaft
-shaft_r = Part('Rotor Shaft, right side of Disct');
+shaft_r = Part('Rotor Shaft, right side of Disc');
 shaft_r.mass = 50e-3;
 shaft_r.setPrimitive('cylinder', 'length', 50e-3, 'diameter', 10e-3)
 % Add an assembly for the shaft
@@ -85,22 +85,36 @@ a_shaft_l.origin = [shaft_l.primitive.length/2, 0, 0];
 a_rd.origin = [shaft_l.primitive.length + rd.primitive.length/2, 0, 0];
 a_shaft_r.origin = [shaft_l.primitive.length + rd.primitive.length + shaft_r.primitive.length/2, 0, 0];
 
+%% Set position for the balancing planes
+balancePlanePos=[0, 110e-3];
 
 %% View the Parts created
 pp = PartPlot();
+% Set position for the balancing planes
+pp.balancePlanePos=balancePlanePos;
 pp.plotAssembly(r);
+view(30,30)
 
 
 %% Calculate the Unbalance in the Planes at x1=0, x2=110e-6
 % since the model has no unbalance, the result will be zero
-u = r.getUAll(0,110e-3)
+u = r.getUAll(balancePlanePos(1), balancePlanePos(2));
 
 %% Create an unbalance by moving the Rotor disc 10 mm up
 a_rd.origin(3) = 10e-3;
 % Plot again and calculate the unbalance
 pp = PartPlot();
+pp.arrowLength=0.02;
+pp.arrowStemWidth=5e-4;
+pp.arrowTipWidth=1e-3;
+pp.balancePlanePos=balancePlanePos;
+pp.showPartLabel = false;
 pp.plotAssembly(r);
-u = r.getUAll(0,110e-3)
+view(30,30)
+u = r.getUAll(balancePlanePos(1), balancePlanePos(2));
+
+pp.unbalanceScaleFactor=100;
+pp.drawResultingDynUnbalance();
 
 % The resulting Unbalace has an amplitude of 500 gmm in each plane which is
 % plausible since the setup is mirror-symmetric and the mass (0.1 kg)

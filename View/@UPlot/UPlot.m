@@ -245,8 +245,11 @@ classdef UPlot < handle
                         q(2)=u.u(2);
                         q(3)=uc.u(1)-u.u(1);
                         q(4)=uc.u(2)-u.u(2);
-                        maxHeadSize = 5/norm(q(3:4));
-                        
+                        try
+                            maxHeadSize = norm(get(obj.h.amplitudeTicks(end),'Position'))/400;
+                        catch
+                            maxHeadSize = 5/norm(q(3:4));
+                        end
                         h.arrow(ii) = quiver(obj.h.axis, q(1), q(2), q(3), q(4),...
                             'AutoScale','off', ...
                             'MaxHeadSize', maxHeadSize, ...
