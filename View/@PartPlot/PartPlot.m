@@ -139,9 +139,9 @@ classdef PartPlot < handle
                         obj.h{end+1} = obj.drawCube(p.getGlobalPosition, [p.primitive.length*1.0001, p.primitive.width*1.0001, p.primitive.height*1.0001], p.getGlobalRotm, p.description);
                         % Plotte in anderer Farbe
                         for nH = 1:length(obj.h{end})
-                            if strcmp(get(obj.h{end}{nH},'Type'), 'surface')
-                                set(obj.h{end}(nH), 'FaceColor', obj.faceColorCuboidHole);
-                                set(obj.h{end}{nH}, 'FaceAlpha', 0.8);
+                            if strcmp(get(obj.h{end}(nH),'Type'), 'surface') || strcmp(get(obj.h{end}(nH),'Type'), 'patch')
+                                set(obj.h{end}(nH), 'FaceColor', obj.faceColorCubeHole);
+                                set(obj.h{end}(nH), 'FaceAlpha', 0.8);
                             end
                         end
                     end

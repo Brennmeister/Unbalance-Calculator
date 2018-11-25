@@ -30,7 +30,7 @@ end
 g=zeros(6,1);
 for i=1:6
     g(i)=patch(obj.axes, x1(:,i),y1(:,i),z1(:,i), 'r');
-    set(g(i),'edgecolor','w', 'FaceColor', obj.faceColorCube, 'faceAlpha', 0.8);
+    set(g(i), 'FaceColor', obj.faceColorCube, 'faceAlpha', 0.8);
 end
 
 if obj.showPartLabel
