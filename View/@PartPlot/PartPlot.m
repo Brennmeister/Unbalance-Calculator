@@ -89,6 +89,8 @@ classdef PartPlot < handle
             end
         end
         function plot(obj, p)
+            % activate axes
+            axes(obj.axes);
             if isa(p,'Assembly')
                 obj.plotAssembly(p);
             elseif isa(p,'Part')

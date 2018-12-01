@@ -31,7 +31,6 @@ P4s = P1+(P4-P1)./norm((P4-P1)).*scaleArrowLength;
 P6s = P1+(P6-P1)./norm((P6-P1)).*scaleArrowLength;
 
 % Plot Arrows and store handles
-axes(obj.axes);
 m(1,1) = obj.Arrows(P1, P2s, 'color',obj.arrowColor{col}(1,:), 'stemWidth', obj.arrowStemWidth, 'tipWidth', obj.arrowTipWidth);
 m(1,2) = obj.Arrows(P1, P4s, 'color',obj.arrowColor{col}(2,:), 'stemWidth', obj.arrowStemWidth, 'tipWidth', obj.arrowTipWidth);
 m(1,3) = obj.Arrows(P1, P6s, 'color',obj.arrowColor{col}(3,:), 'stemWidth', obj.arrowStemWidth, 'tipWidth', obj.arrowTipWidth);
