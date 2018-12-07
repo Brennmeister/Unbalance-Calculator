@@ -86,6 +86,14 @@ classdef PartPlot < handle
                     obj.arrowTipWidth         = obj.arrowTipWidth/5;
                     obj.showBalancePlane      = false;
                     obj.showPartLabel         = false;
+                case 'noKOS'
+                    obj.drawAxisName          = false;
+                    obj.drawAssemblyKS        = false;
+                    obj.arrowLength           = 0;
+                    obj.arrowStemWidth        = 0;
+                    obj.arrowTipWidth         = 0;
+                    obj.showBalancePlane      = false;
+                    obj.showPartLabel         = false;
             end
         end
         function plot(obj, p)
