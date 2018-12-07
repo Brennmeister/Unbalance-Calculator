@@ -75,14 +75,14 @@ classdef Dimension < handle
                     val = obj.tolerance(1) + (obj.tolerance(2)-obj.tolerance(1)).*rand(N,1);
                     % Assure that the new value is within the defined
                     % tolerance
-                    while and(obj.force_value_in_interval, or(val<obj.tolerance(1)), (val>obj.tolerance(2)))
+                    while and(obj.force_value_in_interval, or(val<obj.tolerance(1), val>obj.tolerance(2)))
                         val = obj.tolerance(1) + (obj.tolerance(2)-obj.tolerance(1)).*rand(N,1);
                     end
                 elseif strcmpi(obj.distribution,'norm')
                     val = (obj.tolerance(1) + obj.tolerance(2))/2 + obj.sigma*randn(N,1);
                     % Assure that the new value is within the defined
                     % tolerance
-                    while and(obj.force_value_in_interval, or(val<obj.tolerance(1)), (val>obj.tolerance(2)))
+                    while and(obj.force_value_in_interval, or(val<obj.tolerance(1), val>obj.tolerance(2)))
                         % Varianz = sigma^2
                         val = (obj.tolerance(1) + obj.tolerance(2))/2 + obj.sigma*randn(N,1);
                     end
