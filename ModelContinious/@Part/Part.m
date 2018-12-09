@@ -7,6 +7,7 @@ classdef Part < handle
 		dbg=false						% if true: print debug-info
 		parent      = []				% Links to the parent element
 		mass							% [kg]	Mass of the Part
+        dens                            % [kg/m³] density of part
 		j       						% [kg m²] Trägheitstensor, 3x3, im lokalen, Hauptachsensystem des Parts
 		initialU	= [ 0 0 0 ]			% [kg m] initial unbalance vector. initialU is added to the calculated one
 		primitive						% struct with Informations of the primitive used to calculate inertia
