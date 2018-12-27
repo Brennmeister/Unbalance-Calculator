@@ -214,8 +214,9 @@ classdef Part < handle
 			% Example:
 			%  obj.setPrimitive('cuboid', 'length', 30e-3, 'width', 10e3, 'height', 5e-3); 
 			inpPa = inputParser;
-			inpPa.addRequired('primitiveType',			 @(x) any(validatestring(x,{'pointmass', 'cuboid', 'cylinder', 'cutcylinder'})));
-			inpPa.addParameter('diameter',			0,	 @isnumeric);		% valide for cylinder, cutcylinder
+			inpPa.addRequired('primitiveType',			 @(x) any(validatestring(x,{'pointmass', 'cuboid', 'cylinder', 'cutCylinder', 'cutCylinderWithBore'})));
+			inpPa.addParameter('diameter',			0,	 @isnumeric);		% valide for cylinder, cutCylinder
+            inpPa.addParameter('boreDiameter',		0,	 @isnumeric);		% valide for cutCylinderWithBore
 			inpPa.addParameter('length',			0,	 @isnumeric);		% valide for all
 			inpPa.addParameter('width',				0,	 @isnumeric);		% valide for cuboid
 			inpPa.addParameter('height',			0,	 @isnumeric);		% valide for cuboid
@@ -248,17 +249,23 @@ classdef Part < handle
 				% Check with maple:
 				% fprintf('pMatlab := {m[zylinder] = %f, d[zylinder] = %f, l[zylinder] = %f}; eval(J[zylinderSH_ini], pMatlab);\n\n',inpPa.Results.mass, inpPa.Results.diameter, inpPa.Results.length);
                 obj.cog = [0,0,0];
-			elseif strcmpi(inpPa.Results.primitiveType,'cutcylinder')
+			elseif strcmpi(inpPa.Results.primitiveType,'cutCylinderWithBore')
                 R = inpPa.Results.diameter/2;
+                Ri = inpPa.Results.boreDiameter/2;
                 H = inpPa.Results.length;
-                obj.vol = pi*R^2*H/2;
+                obj.vol = (pi*H*R^2-pi*Ri^2*H)/2;
                 obj.updateMass();
+                
                 obj.j = obj.mass * [
-                    R^2/2,0,(H*R)/8
-                    0,(7*pi*H^3*R^5+12*pi*H*R^7)/(48*pi*H*R^5),0
-                    (H*R)/8,0,(7*pi*H^3*R^5+12*pi*H*R^7)/(48*pi*H*R^5)
+                    (Ri^2+R^2)/2,0,-(Ri^2*H+H*R^2)/(8*R)
+                    0,(3*Ri^2*H^2+(7*H^2+12*Ri^2)*R^2+12*R^4)/(48*R^2),0
+                    -(Ri^2*H+H*R^2)/(8*R),0,(3*Ri^2*H^2+(7*H^2+12*Ri^2)*R^2+12*R^4)/(48*R^2)
 					];
-                obj.cog = [5/16*H,0,R/4];
+                obj.cog = [(Ri^2*H+5*H*R^2)/(16*R^2),0,(Ri^2+R^2)/(4*R)];
+            elseif strcmpi(inpPa.Results.primitiveType,'cutCylinder')
+                % this is a special case of cutCylinderWithBore with
+                % boreDiameter = 0
+                obj.setPrimitive('cutCylinderWithBore','diameter',inpPa.Results.diameter, 'length', inpPa.Results.length, 'boreDiameter', 0);
             end
 			% Save Information about Primitve in struct
 			obj.primitive = inpPa.Results;
