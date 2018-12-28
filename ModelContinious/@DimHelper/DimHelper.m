@@ -47,9 +47,12 @@ classdef DimHelper < handle
             end
         end
         
-        function setUseNominalValue(obj, flag)
+        function setUseNominalValue(obj, flag, forToleranceIDs)
+            if ~exist('forToleranceIDs','var')
+                forToleranceIDs=[];
+            end
             for ii = 1:length(obj.dims)
-                if isa(obj.dims{ii},'Dimension')
+                if and(isa(obj.dims{ii},'Dimension'), or(isempty(forToleranceIDs), any(strcmp(forToleranceIDs, obj.dims{ii}.id))))
                     obj.dims{ii}.use_nominal=flag;
                 end
             end
@@ -61,6 +64,12 @@ classdef DimHelper < handle
                     obj.dims{ii}.updateLinkedEntities()
                 end
             end
+        end
+        
+        function showLinkStatus(obj)
+           for ii=1:length(obj.dims)
+               fprintf('dh.dims{%d}.id = %5s   .linked_to: %3.0f entities\n', ii,obj.dims{ii}.id, length(obj.dims{ii}.linked_to))
+           end 
         end
     end
 end

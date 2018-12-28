@@ -53,8 +53,12 @@ classdef Assembly < handle
 		function pos = getGlobalPosition(obj)
 			if isempty(obj.parent)
 				pos = obj.origin;
-			else
-				pos = obj.parent.getGlobalPosition() + (obj.parent.getGlobalRotm()*obj.origin')';
+            else
+                try
+                    pos = obj.parent.getGlobalPosition() + (obj.parent.getGlobalRotm()*obj.origin')';
+                catch
+                    disp('debug');
+                end
 			end
 		end
 		%% Convert given Points in assembly coordinatesystem to global Coords

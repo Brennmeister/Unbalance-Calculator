@@ -65,7 +65,7 @@ classdef Dimension < handle
             obj.tolerance                 = inpPa.Results.tolerance;
             
             %% Check if tolerance_class can be resolved
-            if ~isempty(obj.tolerance_class) & ~any(strcmp(obj.tolerance_class,{'min', 'max'})) & isempty(obj.tolerance)
+            if ~isempty(obj.tolerance_class) & ~any(strcmp(obj.tolerance_class,{'min', 'max', 'allg'})) & isempty(obj.tolerance)
                 obj.tolerance       = obj.ressolve_tolerance_class();
                 tolerance_already_set = true;
             end
