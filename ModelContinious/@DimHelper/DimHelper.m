@@ -71,6 +71,28 @@ classdef DimHelper < handle
                fprintf('dh.dims{%d}.id = %5s   .linked_to: %3.0f entities\n', ii,obj.dims{ii}.id, length(obj.dims{ii}.linked_to))
            end 
         end
+        
+        function desc = describeDimension(obj, dim_ids)
+            desc = '';
+            desc = sprintf('%s %10s',desc,'ID');
+            desc = sprintf('%s %12s',desc,'nominal/mm');
+            desc = sprintf('%s %20s',desc,'tolerance');
+            desc = sprintf('%s %10s',desc,'z_sigma');
+            desc = sprintf('%s %s',desc,'description');
+            for dim_id = string(dim_ids)
+                dim = obj.getDimension(char(dim_id));
+                desc = sprintf('%s\n%10s',desc,dim.id);
+                desc = sprintf('%s %12s',desc,sprintf('%3.4f', dim.nominal*1e3));
+                if ~isempty(dim.tolerance)
+                    desc = sprintf('%s %20s',desc,sprintf('[%3.4f, %3.4f]', dim.tolerance*1e3));
+                else
+                    desc = sprintf('%s %20s',desc,sprintf('[]'));
+                end
+                desc = sprintf('%s %10s',desc,sprintf('%2.1f', dim.z_sigma));
+                desc = sprintf('%s %s',desc,dim.desc);
+                desc = sprintf('%s', desc);
+            end
+        end
     end
 end
 
