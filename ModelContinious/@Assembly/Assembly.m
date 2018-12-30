@@ -10,11 +10,13 @@ classdef Assembly < handle
 	end
 	properties (SetAccess=private, GetAccess=public)
 		typeID		= 'assembly'	% Specifies the type of the Object
+        uuid                        % uuid for object identifications
 	end
 	methods
 		%% Create Object and set given description
 		function obj = Assembly(description)
 			obj.description = description;
+            obj.uuid = char(java.util.UUID.randomUUID.toString());
 		end
 		%% Get the Position in global coords of the Child
 		function pos = getChildsPosition(obj)
@@ -149,12 +151,14 @@ classdef Assembly < handle
 					else
 						% cc is a part
 						umatNew=cc.getUGlobal(planeA, planeB);
-						umatDescNew = {cc.description};
+                        umatDescNew = strings(1,2);
+						umatDescNew(1,1) = cc.description;
+                        umatDescNew(1,2) = cc.uuid;
 					end
 					% Add calculated Values to the Matrix
 					umat=[umat; umatNew];
 					% umatDesc = {umatDesc{:} umatDescNew{:}}; % Slow
-					umatDesc = [umatDesc umatDescNew];
+					umatDesc = [umatDesc; umatDescNew];
 				end
 				% If there was no child, do not calculate the unbalance -->
 				% there is no unbalance

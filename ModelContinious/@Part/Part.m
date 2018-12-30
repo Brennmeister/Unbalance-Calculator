@@ -22,12 +22,14 @@ classdef Part < handle
         origin		= [0 0 0];		% [m] Ursprung. Muss immer [0 0 0] sein.
         orientation	= [1 0 0 0];	% [-] Orientierung des Teils. Muss immer [1 0 0 0] sein.  1:3=> Normalenvektor 4: Drehung um diese Achse
         cog         = [0 0 0];      % [m] Center of gravity. required if coordinate system of part is not set into the center of gravity, e.g. for primitive cutcylinder
+        uuid                        % uuid for object identifications
     end
     
     methods
         %% Create Object with Constructor
         function obj = Part(description)
             obj.description = description;
+            obj.uuid = char(java.util.UUID.randomUUID.toString());
         end
         %% Position in local coordinates
         function pos = getChildsPosition(obj)
