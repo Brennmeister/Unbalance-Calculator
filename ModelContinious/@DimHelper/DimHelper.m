@@ -74,9 +74,10 @@ classdef DimHelper < handle
         
         function desc = describeDimension(obj, dim_ids)
             desc = '';
-            desc = sprintf('%s %10s',desc,'ID');
+            desc = sprintf('%s%10s',desc,'ID');
             desc = sprintf('%s %12s',desc,'nominal/mm');
             desc = sprintf('%s %20s',desc,'tolerance');
+            desc = sprintf('%s %10s',desc,'unit');
             desc = sprintf('%s %10s',desc,'z_sigma');
             desc = sprintf('%s %s',desc,'description');
             for dim_id = string(dim_ids)
@@ -84,10 +85,18 @@ classdef DimHelper < handle
                 desc = sprintf('%s\n%10s',desc,dim.id);
                 desc = sprintf('%s %12s',desc,sprintf('%3.4f', dim.nominal*1e3));
                 if ~isempty(dim.tolerance)
-                    desc = sprintf('%s %20s',desc,sprintf('[%3.4f, %3.4f]', dim.tolerance*1e3));
+                    if or(strcmpi(dim.unit,'RAD'), strcmpi(dim.unit,'DEG'))
+                        scaleFactor=1;
+                        unit_prefix=' ';
+                    else
+                        scaleFactor=1e3;
+                        unit_prefix='m';
+                    end
+                    desc = sprintf('%s %20s',desc,sprintf('[%3.4f, %3.4f]', dim.tolerance*scaleFactor));
                 else
                     desc = sprintf('%s %20s',desc,sprintf('[]'));
                 end
+                desc = sprintf('%s %10s',desc,sprintf('%s%s', unit_prefix, dim.unit));
                 desc = sprintf('%s %10s',desc,sprintf('%2.1f', dim.z_sigma));
                 desc = sprintf('%s %s',desc,dim.desc);
                 desc = sprintf('%s', desc);

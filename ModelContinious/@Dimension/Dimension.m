@@ -32,7 +32,7 @@ classdef Dimension < handle
             inpPa.addParameter(                    'sigma',       [],        @isnumeric                                     );
             inpPa.addParameter(                  'z_sigma',       [],        @isnumeric                                     );
             inpPa.addParameter(                   'source',       '',        @(x) or(ischar(x),isempty(x))                  );
-            inpPa.addParameter(                     'unit',       '',        @(x) or(ischar(x),isempty(x))                  );
+            inpPa.addParameter(                     'unit',      'm',        @(x) or(ischar(x),isempty(x))                  );
             inpPa.addParameter(                     'desc',       '',        @(x) or(ischar(x),isempty(x))                  );
             inpPa.addParameter(              'use_nominal',     true,        @boolean                                       );
             inpPa.addParameter(  'force_value_in_interval',     true,        @boolean                                       );

@@ -44,7 +44,7 @@ classdef UPlot < handle
             
             % Store ColorMap
             if ~isempty(inP.cm)
-                    obj.cm = inP.cm;
+                obj.cm = inP.cm;
             else
                 obj.cm = colormap('lines');
             end
@@ -55,6 +55,8 @@ classdef UPlot < handle
             obj.h.phaseTicks = []; % holds handles for ticks
             % Set hold on for the axes
             hold(obj.h.axis,'on');
+            % Activate data cursor mode
+            obj.dcm('on');
         end
         
         function obj = updatePolarGrid(obj,varargin)
@@ -85,7 +87,7 @@ classdef UPlot < handle
             if ~isempty(obj.h.amplitudeTicks)
                 delete(obj.h.amplitudeTicks);
             end
-             if ~isempty(obj.h.phaseTicks)
+            if ~isempty(obj.h.phaseTicks)
                 delete(obj.h.phaseTicks);
             end
             % create new Grid for amplitude
@@ -152,11 +154,7 @@ classdef UPlot < handle
                 'MarkerEdgeColor','none',...
                 'LineStyle', 'none');
             obj.u{end+1}.marker = h;
-            
-            dcm_obj = datacursormode(obj.h.fig);
-            set(dcm_obj,'Enable','on');
-            set(dcm_obj,'UpdateFcn',@obj.dcUpdate);
-            
+                       
             if exist('label','var')
                 set(h,'Tag',label);
             end
@@ -193,7 +191,7 @@ classdef UPlot < handle
             set(h,'MarkerFaceColor',[199 97 20]./255);
         end
         
-        %% 
+        %%
         function h = addUHistory(obj, u)
             % Adds multiple unbalances and draws arrows
             % Example-input:
@@ -205,7 +203,7 @@ classdef UPlot < handle
             % myU.showArrow   = true;      % optional
             % myU.uncertainty = 1.5e-3;    % optional
             % myU.child{1}.u  = [3 4];
-
+            
             
             % Plot initial value
             if ~isfield(u,'label')
@@ -258,7 +256,7 @@ classdef UPlot < handle
                     end
                 end
                 if isfield(h,'arrow')
-                obj.u{n}.arrow = h.arrow;
+                    obj.u{n}.arrow = h.arrow;
                 end
             end
         end
@@ -318,11 +316,18 @@ classdef UPlot < handle
             end
             obj.h.legend = clickableLegendM(hMarker, ltxt);
             h=obj.h.legend;
-            % Deactivate data cursor mode
-            dcm_obj = datacursormode(obj.h.fig);
-            set(dcm_obj,'Enable','off');
+            obj.dcm('off');
         end
-        
+        function dcm(obj, state)
+            dcm_obj = datacursormode(obj.h.fig);
+            if strcmp(state,'on')
+                set(dcm_obj,'Enable','on');
+                set(dcm_obj,'UpdateFcn',@obj.dcUpdate);
+            else
+                % Deactivate data cursor mode
+                set(dcm_obj,'Enable','off');
+            end
+        end
         function zoom(obj)
             N= length(obj.u);
             x=zeros(1, N);
