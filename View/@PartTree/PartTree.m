@@ -88,7 +88,7 @@ classdef PartTree < handle
 				isRootNode = true;
 			else
 				isRootNode = false;
-			end
+            end
 			if isprop(inP.element,'child')
 				% There could be children
 				if ~isempty(inP.element.child)

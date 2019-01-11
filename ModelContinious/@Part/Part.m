@@ -230,7 +230,7 @@ classdef Part < handle
                 obj.vol = 0;
                 obj.cog = [0,0,0];
             elseif strcmpi(inpPa.Results.primitiveType,'cuboid')
-                obj.vol = inpPa.Results.width*inpPa.Results.height*inpPa.Results.length;
+                obj.vol = abs(inpPa.Results.width*inpPa.Results.height*inpPa.Results.length);
                 obj.updateMass();
                 obj.j = obj.mass/12 * [
                     inpPa.Results.width^2+inpPa.Results.height^2, 0, 0
@@ -241,7 +241,7 @@ classdef Part < handle
                 % fprintf('pMatlab := {l[quad_x] = %f, l[quad_y] = %f, l[quad_z] = %f, m[quader] = %f}; eval(J[quaderSH_ini], pMatlab);\n\n',inpPa.Results.mass, inpPa.Results.length, inpPa.Results.width, inpPa.Results.height);
                 obj.cog = [0,0,0];
             elseif strcmpi(inpPa.Results.primitiveType,'cylinder')
-                obj.vol = pi*inpPa.Results.diameter^2/4*inpPa.Results.length;
+                obj.vol = abs(pi*inpPa.Results.diameter^2/4*inpPa.Results.length);
                 obj.updateMass();
                 obj.j = obj.mass/2 * [
                     (inpPa.Results.diameter/2)^2, 0, 0
@@ -255,7 +255,7 @@ classdef Part < handle
                 R = inpPa.Results.diameter/2;
                 Ri = inpPa.Results.boreDiameter/2;
                 H = inpPa.Results.length;
-                obj.vol = (pi*H*R^2-pi*Ri^2*H)/2;
+                obj.vol = abs((pi*H*R^2-pi*Ri^2*H)/2);
                 obj.updateMass();
                 
                 obj.j = obj.mass * [

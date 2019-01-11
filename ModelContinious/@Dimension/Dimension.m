@@ -171,8 +171,8 @@ classdef Dimension < handle
             %% UPDATELINKEDENTITIES updates the values on each linked part/assembly
             links = obj.linked_to;
             for ii = 1:length(obj.linked_to)
-                cmd=sprintf('links(%d).part.%s = [%s];', ii, links(ii).property, sprintf('%f,',links(ii).calc_func(obj.value())));
-                %  fprintf('Executing "%s" on part %s for dim-id %s\n', cmd, links(ii).part.description, obj.id);
+                cmd=sprintf('links(%d).part.%s = [%s];', ii, links(ii).property, sprintf('%0.12e,',links(ii).calc_func(obj.value())));
+                % fprintf('Executing "%s" on part %s for dim-id %s\n', cmd, links(ii).part.description, obj.id);
                 try
                     eval(cmd);
                 catch
