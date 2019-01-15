@@ -173,6 +173,7 @@ classdef UPlot < handle
                 set(h,...
                     'MarkerFaceColor',obj.cm(length(obj.u),:))
             end
+            
         end
         function h = addUMeasuredAssembly(obj,u,label)
             h=obj.addU(u,label);

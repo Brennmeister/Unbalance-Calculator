@@ -75,9 +75,10 @@ classdef DimHelper < handle
         function desc = describeDimension(obj, dim_ids)
             desc = '';
             desc = sprintf('%s%10s',desc,'ID');
-            desc = sprintf('%s %12s',desc,'nominal/mm');
+            desc = sprintf('%s %12s',desc,'nominal');
             desc = sprintf('%s %20s',desc,'tolerance');
             desc = sprintf('%s %10s',desc,'unit');
+            desc = sprintf('%s %10s',desc,'dist');
             desc = sprintf('%s %10s',desc,'z_sigma');
             desc = sprintf('%s %s',desc,'description');
             for dim_id = string(dim_ids)
@@ -97,10 +98,64 @@ classdef DimHelper < handle
                     desc = sprintf('%s %20s',desc,sprintf('[]'));
                 end
                 desc = sprintf('%s %10s',desc,sprintf('%s%s', unit_prefix, dim.unit));
+                desc = sprintf('%s %10s',desc,sprintf('%s', dim.distribution));
                 desc = sprintf('%s %10s',desc,sprintf('%2.1f', dim.z_sigma));
                 desc = sprintf('%s %s',desc,dim.desc);
                 desc = sprintf('%s', desc);
             end
+        end
+        function [td, desc] = getDimensionTableTeX(obj, dim_ids)
+            N = length(dim_ids);
+            desc.ID=strings(N+1,1);
+            desc.nominal=strings(N+1,1);
+            desc.tolerance=strings(N+1,1);
+            desc.unit=strings(N+1,1);
+            desc.dist=strings(N+1,1);
+            desc.z_sigma=strings(N+1,1);
+            desc.description=strings(N+1,1);
+            
+            ii=1;
+            desc.ID(ii)="Toleranz-ID";
+            desc.nominal="Nominal";
+            desc.tolerance(ii)="Toleranz";
+            desc.unit(ii)="Einheit";
+            desc.dist(ii)="Verteilung";
+            desc.z_sigma(ii)="z\_sigma";
+            desc.description(ii)="Beschreibung";
+            
+            ii=2;
+            for dim_id = string(dim_ids)
+                dim = obj.getDimension(char(dim_id));
+                desc.ID(ii) = dim.id;
+                desc.nominal(ii) = sprintf('\\SI{%3.4f}', dim.nominal*1e3);
+                
+                if ~isempty(dim.tolerance)
+                    if or(strcmpi(dim.unit,'RAD'), strcmpi(dim.unit,'DEG'))
+                        scaleFactor=1;
+                        unitPrefix='';
+                    else
+                        scaleFactor=1e3;
+                        unitPrefix='m';
+                    end
+                    desc.tolerance(ii) = sprintf('$[\\SI{%3.4f},\\, \\SI{%3.4f}]$', dim.tolerance*scaleFactor);
+                    desc.unit(ii) = sprintf('\\SI{}{%s%s}', unitPrefix, dim.unit);
+                else
+                    desc.tolerance(ii) = sprintf('$[]$', dim.tolerance*scaleFactor);
+                end
+                desc.dist(ii) = sprintf('%s', dim.distribution);
+                desc.z_sigma(ii) = sprintf('\\SI{%2.1f}', dim.z_sigma);
+                desc.description(ii) = dim.desc;                
+                ii=ii+1;
+            end
+            
+            td = [
+                desc.ID(:), ... 
+                desc.nominal(:), ...
+                desc.tolerance(:), ...
+                desc.unit(:), ...
+                desc.dist(:), ...
+                desc.z_sigma(:), ...
+                desc.description(:)];
         end
     end
 end
