@@ -194,6 +194,17 @@ classdef PartPlot < handle
                             obj.h{end}{end+1}=h;
                         end
                     end
+                elseif strcmp(p.primitive.primitiveType, 'pointmass')
+                    pos=p.getGlobalPosition();
+                    obj.h{end+1}=plot3(pos(1), pos(2), pos(3),'o', 'MarkerSize', 8, 'MarkerFaceColor', [0,0,0]);
+                elseif strcmp(p.primitive.primitiveType, 'cutCylinderWithBore')
+                    pos=p.getGlobalPosition();
+                    R = p.primitive.diameter/2;
+                    Ri = p.primitive.boreDiameter/2;
+                    
+                    obj.drawCircle(pos, R,  p.getGlobalRotm, p.description);
+                    obj.drawCircle(pos, Ri,  p.getGlobalRotm, p.description);
+                     
                 else
                     %just in case a wrong primitive was given as an input
                     warning('Such a primitive cannot be plotted');
